@@ -1,0 +1,27 @@
+name: fw-ci
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  pull_request:
+    branches: [develop]
+jobs:
+  fw-release:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v2
+      - name: Build lattice_digitizer
+        run: |
+          . /setup-diamond.sh
+          cmake -GNinja -Bbuild
+          cmake --build build --target lattice_digitizer
+      - name: Upload lattice_digitizer Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: lattice_digitizer
+          path: |
+            build/fw/src/lattice_digitizer
+            build/fw/src/lattice_digitizer/.vdbs
+    container:
+      image: nupole/diamond:latest
+      options: --mac-address B4:6D:83:5A:AD:A2
