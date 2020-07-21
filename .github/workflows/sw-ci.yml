@@ -1,0 +1,25 @@
+name: sw-ci
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  pull_request:
+    branches: [develop]
+jobs:
+  sw-release:
+    runs-on: [self-hosted, Linux, ARM, Pi]
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v2
+      - name: Configure CMake
+        run: cmake -GNinja -Bbuild
+      - name: Build libDigitizer.so
+        run: cmake --build build --target libDigitizer.so
+      - name: Build test
+        run: cmake --build build --target test
+      - name: Upload libDigitizer Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: libDigitizer
+          path: |
+            build/sw/lib/libDigitizer.so
+            build/sw/test/test
