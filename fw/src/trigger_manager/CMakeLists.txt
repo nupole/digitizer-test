@@ -1,1 +1,2 @@
 add_subdirectory(channel_trigger_n)
+add_subdirectory(coincidence)
